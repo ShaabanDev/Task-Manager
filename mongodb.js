@@ -1,6 +1,5 @@
-const mongodb = require("mongodb");
+const {MongoClient,ObjectId,} = require("mongodb");
 
-const MongoClient = mongodb.MongoClient;
 
 const connectionURL = 'mongodb://127.0.0.1:27017';
 
@@ -13,4 +12,5 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true },(error,client)=>{
     }
 
     console.log('connected correctly');
+    const db = client.db(dbName);
 });
