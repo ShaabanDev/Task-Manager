@@ -6,6 +6,34 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+// ------------DELETE------------
+
+// ------------USERS-----------
+
+app.delete('/users/:id', async (req,res)=>{
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if(!user){
+      res.status(404).send();
+    }
+    res.send(user);
+  } catch (error) {
+    res.status(500).send();
+  }
+})
+
+// ------------TASKS-----------
+app.delete('/tasks/:id', async (req,res)=>{
+  try {
+    const task = await Task.findByIdAndDelete(req.params.id);
+    if(!task){
+      res.status(404).send();
+    }
+    res.send(task);
+  } catch (error) {
+    res.status(500).send();
+  }
+})
 
 // ------------PATCH (UPDATE)------------
 
