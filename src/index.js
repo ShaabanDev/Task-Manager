@@ -7,6 +7,29 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
+// ------------GET------------
+
+// ------------TASKS-----------
+
+// getting all the tasks
+app.get('/tasks',(req,res)=>{
+  Task.find().then((tasks) => {
+    res.send(tasks);
+  }).catch((err) => {
+    res.status(400).send();
+  });
+})
+// getting the task by it id 
+app.get('/tasks/:id',(req,res)=>{
+  const _id = req.params.id;
+  Task.findById(_id).then((task) => {
+    res.send(task);
+  }).catch((err) => {
+    res.status(500).send()
+  });
+})
+
+// ------------USERS-----------
 
 // getting all the users
 app.get("/users", (req, res) => {
@@ -31,6 +54,10 @@ app.get("/users/:id", (req, res) => {
   });
 
 
+// ------------POST------------
+
+// ------------USERS-----------
+
 // post new user to the server side then send it again to the client side
 app.post("/users", (req, res) => {
   const user = new User(req.body);
@@ -43,6 +70,9 @@ app.post("/users", (req, res) => {
       res.status(400).send(err);
     });
 });
+
+
+// ------------USERS-----------
 
 // post new task on the server side to then it again the client side
 app.post("/tasks", (req, res) => {
