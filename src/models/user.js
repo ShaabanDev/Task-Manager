@@ -42,7 +42,7 @@ const User = mongoose.model('Users',{
         // validate the password value using the validator module
         validate(value){
             if(value.includes('password')){
-                throw new Error('Enter valid Email');
+                throw new Error('Enter valid Password');
             }
         }
     }

@@ -7,6 +7,47 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
+// ------------PATCH (UPDATE)------------
+
+// ------------USERS-----------
+
+// update user by it is's id
+app.patch("/users/:id", async (req, res) => {
+  const _id = req.params.id;
+  try {
+    const user = await User.findByIdAndUpdate(_id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!user) {
+      return res.status(404).send();
+    }
+    res.send(user);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+// ------------TASKS-----------
+
+// update task by it is's id
+app.patch("/tasks/:id", async (req, res) => {
+  try {
+    const _id = req.params.id;
+    const task = await Task.findByIdAndUpdate(_id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!task) {
+      return res.status(404).send();
+    }
+    res.send(task);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
 // ------------GET------------
 
 // ------------TASKS-----------
