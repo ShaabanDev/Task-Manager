@@ -27,15 +27,25 @@ router.get("/users/:id", async (req, res) => {
 });
 
 // ------------POST------------
-
+router.post("/users/login", async (req, res) => {
+  try {
+    const user = await User.findByEmailAndPassword(
+      req.body.email,
+      req.body.password
+    );
+    res.send(user);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
 // post new user to the server side then send it again to the client side
 router.post("/users", async (req, res) => {
   const user = new User(req.body);
   try {
     await user.save();
-    res.send(user);
+    res.status(201).send(user);
   } catch (error) {
-    res.status(404).send(error);
+    res.status(400).send(error);
   }
 });
 
@@ -58,14 +68,14 @@ router.patch("/users/:id", async (req, res) => {
     //   runValidators: true,
     // });
     const user = await User.findById(_id);
-    requestKeys.forEach((field)=>user[field]=req.body[field]);
+    requestKeys.forEach((field) => (user[field] = req.body[field]));
     await user.save();
     if (!user) {
       return res.status(404).send();
     }
     res.send(user);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(400).send(error);
   }
 });
