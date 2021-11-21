@@ -13,6 +13,14 @@ app.use(express.json());
 
 // update user by it is's id
 app.patch("/users/:id", async (req, res) => {
+  const availableUpdates = ["name", "age", "password", "email"];
+  const requestKeys = Object.keys(req.body);
+  const isValid = requestKeys.every((update) =>
+    availableUpdates.includes(update)
+  );
+  if (!isValid) {
+    return res.status(404).send({ error: "invalid updates" });
+  }
   const _id = req.params.id;
   try {
     const user = await User.findByIdAndUpdate(_id, req.body, {
@@ -32,6 +40,14 @@ app.patch("/users/:id", async (req, res) => {
 
 // update task by it is's id
 app.patch("/tasks/:id", async (req, res) => {
+  const availableUpdates = ["description", "completed"];
+  const requestKeys = Object.keys(req.body);
+  const isValid = requestKeys.every((update) =>
+    availableUpdates.includes(update)
+  );
+  if (!isValid) {
+    return res.status(404).send({ error: "invalid updates" });
+  }
   try {
     const _id = req.params.id;
     const task = await Task.findByIdAndUpdate(_id, req.body, {
