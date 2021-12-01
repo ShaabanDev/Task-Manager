@@ -37,8 +37,19 @@ router.get("/tasks/:id", auth, async (req, res) => {
 });
 // getting all the tasks
 router.get("/tasks", auth, async (req, res) => {
+  const match ={}
+  if(req.query.completed){
+    match.completed = req.query.completed
+  }
   try {
-    await req.user.populate("tasks");
+    await req.user.populate({
+      path:"tasks",
+      match,
+      options:{
+        limit:parseInt(req.query.limit),
+        skip:parseInt(req.query.skip)
+      }
+    });
     res.send(req.user.tasks);
   } catch (error) {
     res.status(400).send(error);

@@ -56,6 +56,8 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
+},{
+  timestamps:true
 });
 
 userSchema.pre("save", async function (next) {
@@ -106,7 +108,7 @@ userSchema.statics.findByEmailAndPassword = async (email, password) => {
 };
 
 // creating the user model
-const User = mongoose.model("Users", userSchema);
+const User = mongoose.model("Users", userSchema,);
 
 //  export the user model
 module.exports = User;
