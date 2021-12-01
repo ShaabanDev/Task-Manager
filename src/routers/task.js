@@ -1,11 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const Task = require("../models/task");
-
+const auth = require("../middleware/auth");
 // ------------POST------------
 // post new task on the server side to then it again the client side
-router.post("/tasks", async (req, res) => {
-  const task = new Task(req.body);
+router.post("/tasks", auth, async (req, res) => {
+  const task = new Task({
+    ...req.body,
+    owner: req.user._id,
+  });
   try {
     await task.save();
     res.send(task);
@@ -50,7 +53,7 @@ router.patch("/tasks/:id", async (req, res) => {
   }
   try {
     const task = await Task.findById(req.params.id);
-    requestKeys.forEach((update)=>task[update]=req.body[update]);
+    requestKeys.forEach((update) => (task[update] = req.body[update]));
     await task.save();
     if (!task) {
       return res.status(404).send();

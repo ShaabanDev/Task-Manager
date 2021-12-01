@@ -79,6 +79,12 @@ userSchema.methods.generateAuthToken= async function(){
   return token
 }
 
+userSchema.virtual('tasks',{
+  ref:'Tasks',
+  localField:'_id',
+  foreignField:'owner'
+})
+
 userSchema.statics.findByEmailAndPassword = async(email,password)=>{
   const user = await User.findOne({email});
   if(!user){
@@ -90,6 +96,7 @@ userSchema.statics.findByEmailAndPassword = async(email,password)=>{
   }
   return user;
 }
+
 // creating the user model
 const User = mongoose.model("Users", userSchema);
 
