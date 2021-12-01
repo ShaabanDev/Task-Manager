@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 // import the validator module
 const validator = require("validator");
 const bcryptjs = require("bcryptjs");
-const jwt = require('jsonwebtoken');
-
+const jwt = require("jsonwebtoken");
+const Task = require("./task");
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -26,8 +26,8 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     trim: true,
-    required:true,
-    unique:true,
+    required: true,
+    unique: true,
     lowercase: true,
     required: true,
     // validate the email value using the validator module
@@ -48,12 +48,14 @@ const userSchema = new mongoose.Schema({
       }
     },
   },
-  tokens:[{
-    token:{
-      type:String,
-      required:true,
-    }
-  }]
+  tokens: [
+    {
+      token: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
 
 userSchema.pre("save", async function (next) {
@@ -64,38 +66,44 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+userSchema.pre("remove", async function (next) {
+  const user = this;
+  await Task.deleteMany({ owner: user._id });
+  next();
+});
+
 userSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
   delete userObject.password;
   delete userObject.tokens;
   return userObject;
-}
-userSchema.methods.generateAuthToken= async function(){
+};
+userSchema.methods.generateAuthToken = async function () {
   const user = this;
-  const token = await jwt.sign({_id:user._id.toString()},'logintheuser',);
-  user.tokens = user.tokens.concat({token});
+  const token = await jwt.sign({ _id: user._id.toString() }, "logintheuser");
+  user.tokens = user.tokens.concat({ token });
   await user.save();
-  return token
-}
+  return token;
+};
 
-userSchema.virtual('tasks',{
-  ref:'Tasks',
-  localField:'_id',
-  foreignField:'owner'
-})
+userSchema.virtual("tasks", {
+  ref: "Tasks",
+  localField: "_id",
+  foreignField: "owner",
+});
 
-userSchema.statics.findByEmailAndPassword = async(email,password)=>{
-  const user = await User.findOne({email});
-  if(!user){
-    throw new Error('Unable to login').toString();
+userSchema.statics.findByEmailAndPassword = async (email, password) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new Error("Unable to login").toString();
   }
-  const isMatch = await bcryptjs.compare(password,user.password);
-  if(!isMatch){
-    throw new Error('Unable to login').toString();
+  const isMatch = await bcryptjs.compare(password, user.password);
+  if (!isMatch) {
+    throw new Error("Unable to login").toString();
   }
   return user;
-}
+};
 
 // creating the user model
 const User = mongoose.model("Users", userSchema);

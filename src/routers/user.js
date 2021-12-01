@@ -29,7 +29,6 @@ router.post("/users/logout", auth, async (req, res) => {
   }
 });
 
-
 // ------------POST------------
 router.post("/users/login", async (req, res) => {
   try {
@@ -58,7 +57,7 @@ router.post("/users", async (req, res) => {
 // ------------PATCH (UPDATE)------------
 
 // update user by it is's id
-router.patch("/users/me",auth, async (req, res) => {
+router.patch("/users/me", auth, async (req, res) => {
   const availableUpdates = ["name", "age", "password", "email"];
   const requestKeys = Object.keys(req.body);
   const isValid = requestKeys.every((update) =>
@@ -80,7 +79,7 @@ router.patch("/users/me",auth, async (req, res) => {
 
 // ------------DELETE------------
 
-router.delete("/users/me",auth, async (req, res) => {
+router.delete("/users/me", auth, async (req, res) => {
   try {
     await req.user.remove();
     res.send(req.user);
