@@ -5,60 +5,66 @@ const validator = require("validator");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Task = require("./task");
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    trim: true,
-    uppercase: true,
-    required: true,
-  },
-  age: {
-    type: Number,
-    default: 0,
-    // validate the age value using the validator module
-    validate(value) {
-      if (value < 0) {
-        throw new Error("Enter valid age");
-      }
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      trim: true,
+      uppercase: true,
+      required: true,
     },
-  },
-
-  email: {
-    type: String,
-    trim: true,
-    required: true,
-    unique: true,
-    lowercase: true,
-    required: true,
-    // validate the email value using the validator module
-    validate(value) {
-      if (!validator.isEmail(value)) {
-        throw new Error("Enter valid Email");
-      }
-    },
-  },
-  password: {
-    type: String,
-    trim: true,
-    minlength: 7,
-    // validate the password value using the validator module
-    validate(value) {
-      if (value.includes("password")) {
-        throw new Error("Enter valid Password");
-      }
-    },
-  },
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true,
+    age: {
+      type: Number,
+      default: 0,
+      // validate the age value using the validator module
+      validate(value) {
+        if (value < 0) {
+          throw new Error("Enter valid age");
+        }
       },
     },
-  ],
-},{
-  timestamps:true
-});
+
+    email: {
+      type: String,
+      trim: true,
+      required: true,
+      unique: true,
+      lowercase: true,
+      required: true,
+      // validate the email value using the validator module
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Enter valid Email");
+        }
+      },
+    },
+    password: {
+      type: String,
+      trim: true,
+      minlength: 7,
+      // validate the password value using the validator module
+      validate(value) {
+        if (value.includes("password")) {
+          throw new Error("Enter valid Password");
+        }
+      },
+    },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+    avatar: {
+      type: Buffer,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 userSchema.pre("save", async function (next) {
   const user = this;
@@ -108,7 +114,7 @@ userSchema.statics.findByEmailAndPassword = async (email, password) => {
 };
 
 // creating the user model
-const User = mongoose.model("Users", userSchema,);
+const User = mongoose.model("Users", userSchema);
 
 //  export the user model
 module.exports = User;
