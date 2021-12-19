@@ -46,9 +46,6 @@ IT run your application on http://localhost:3000/
 
 [Task Manager API](https://mo-sh-task-manager.herokuapp.com/)
 
-## Postman Collection Link For Both Local and Production Environment
-
-[Task Manager API Shared Collection](https://www.getpostman.com/collections/4c2667002b265a5744ca)
 
 
 ## API Endpoints
